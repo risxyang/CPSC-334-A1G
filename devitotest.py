@@ -1,18 +1,31 @@
 import sys
 import csv
-from PyQt5 import QtGui
+from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QPushButton, 
                              QToolTip, QMessageBox, QLabel, QLineEdit,
                              QHBoxLayout, QVBoxLayout)
-from PyQt5.QtGui import QColor
 
 class Window2(QMainWindow):                           # <===
     def __init__(self):
         super().__init__()
-        self.initUI()
-
-    def initUI(self):
+        self.resize(400, 200)
+        self.installEventFilter(self)
         self.setWindowTitle("Resize This Window")
+
+        #labels
+        self.label1 = QLabel("Top-Left Corner", self)
+        self.label1.move(50, 50)
+        self.label2 = QLabel("(~~~ : ~~~)", self)
+        self.label2.move(150, 50)
+        self.label3 = QLabel("Bottom-Right\n Corner", self)
+        self.label3.move(50, 100)
+        self.label4 = QLabel("(~~~ : ~~~)", self)
+        self.label4.move(150, 100)
+        self.label5 = QLabel("Resolution: ", self)
+        self.label5.move(50, 150)
+        self.label6 = QLabel("(~~~ x ~~~)", self)
+        self.label6.move(150, 150)
+    
         self.label = QLabel("^Up on Desktop^", self)
         self.pushButton = QPushButton("<", self)
         self.pushButton.resize(200,50)
@@ -37,12 +50,26 @@ class Window2(QMainWindow):                           # <===
 
     def left_up(self):
         print("Desktop-Left is Projector-Space-Up")
-    
+
     def up_up(self):
         print("Desktop-Up is Projector-Space-Up")
-    
+
     def down_up(self):
         print("Desktop-Down is Projector-Space-Up")
+
+    def eventFilter(self, obj, event):
+        if event.type() in {QtCore.QEvent.Resize, QtCore.QEvent.Move}:
+            #Store useful variables
+            width = self.frameGeometry().width()
+            height = self.frameGeometry().height()
+            p = self.mapToGlobal(QtCore.QPoint(0, 0))
+            q = self.mapToGlobal(QtCore.QPoint(width, height))
+
+            #Refresh Labels
+            self.label2.setText((str(p)[19:]))
+            self.label4.setText((str(q)[19:]))
+            self.label6.setText(str(width) + " x " + str(height))
+        return super().eventFilter(obj, event)   
 
 
 class Window(QMainWindow):
