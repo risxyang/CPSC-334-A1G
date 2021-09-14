@@ -4,6 +4,7 @@ from PyQt5 import QtGui
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QPushButton, 
                              QToolTip, QMessageBox, QLabel, QLineEdit,
                              QHBoxLayout, QVBoxLayout)
+from PyQt5.QtGui import QColor
 
 class Window2(QMainWindow):                           # <===
     def __init__(self):
@@ -12,6 +13,36 @@ class Window2(QMainWindow):                           # <===
 
     def initUI(self):
         self.setWindowTitle("Resize This Window")
+        self.label = QLabel("^Up on Desktop^", self)
+        self.pushButton = QPushButton("<", self)
+        self.pushButton.resize(200,50)
+        self.pushButton.clicked.connect(self.left_up)
+
+        self.pushButton.move(0, 0)
+        self.pushButton = QPushButton(">", self)
+        self.pushButton.clicked.connect(self.right_up)
+
+        self.pushButton.resize(200,50)
+        self.pushButton.move(0, 50)
+        self.pushButton = QPushButton("^", self)
+        self.pushButton.clicked.connect(self.up_up)
+
+        self.pushButton.resize(0,100)
+        self.pushButton = QPushButton("V", self)
+        self.pushButton.resize(0,150)
+        self.pushButton.clicked.connect(self.down_up)
+
+    def right_up(self):
+        print("Desktop-Right is Projector-Space-Up")
+
+    def left_up(self):
+        print("Desktop-Left is Projector-Space-Up")
+    
+    def up_up(self):
+        print("Desktop-Up is Projector-Space-Up")
+    
+    def down_up(self):
+        print("Desktop-Down is Projector-Space-Up")
 
 
 class Window(QMainWindow):
