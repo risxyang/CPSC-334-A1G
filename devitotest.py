@@ -1,4 +1,5 @@
 import sys
+import csv
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QPushButton, 
                              QToolTip, QMessageBox, QLabel, QLineEdit,
@@ -21,6 +22,14 @@ class Window(QMainWindow):
     def initUI(self):
         #self.setWindowTitle("Resize This Window")
 
+        c = csv.writer(output)
+        c.writerow(['Monitor', 'Projector', 'Orientation', 'Resolution'
+            'Top Left Coordinate', 'Bottom Right Coordinate'])
+        monitors = ['1A', '1B', '1C', '2A', '2B', '2C']
+        for monitor in monitors:
+            c.writerow([monitor])
+
+
         self.title = "First Window"
         self.top = 100
         self.left = 100
@@ -38,13 +47,12 @@ class Window(QMainWindow):
         self.lineEntry1 = QLineEdit(self) #Projector number textbox
         self.lineEntry1.move(285, 150)
         self.lineEntry1.resize(100,20)
-        number = lineEntry1.text()
 
         self.lineEntry2 = QLineEdit(self) #Orientation textbox
         self.lineEntry2.move(285, 200)
         self.lineEntry2.resize(100,20)
 
-        self.pushButton = QPushButton() 
+        self.pushButton = QPushButton("Set", self) 
         self.pushButton.setObjectName("set") 
         self.pushButton.resize(100,50)
         self.pushButton.move(430, 160)
@@ -75,11 +83,20 @@ class Window(QMainWindow):
         #print(text)
 
     def button_clicked(self):
-        value = self.lineEntry1.text()
-        print(value)
+        projector = self.lineEntry1.text()
+        orientation = self.lineEntry2.text()
+        print(projector + ", " + orientation)
+
+        #monitors = ['1A', '1B', '1C', '2A', '2B', '2C']
+
+        #output = open('output.csv', 'w')
+        #c = csv.writer(output)
+        #c.writerow(monitors[currentRow], projector, orientation, 0, 0, 0)
+        #currentRow = currentRow + 1
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    output = open('output.csv', 'w')
     window = Window()
     sys.exit(app.exec())
