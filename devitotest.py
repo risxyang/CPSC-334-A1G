@@ -8,9 +8,9 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QPushButton,
 class Window2(QMainWindow):                           # <===
     def __init__(self):
         super().__init__()
-        self.resize(400, 200)
+        self.resize(500, 400)
+        self.setWindowTitle("Resize This Window!")
         self.installEventFilter(self)
-        self.setWindowTitle("Resize This Window")
 
         #labels
         self.label1 = QLabel("Top-Left Corner", self)
@@ -26,36 +26,51 @@ class Window2(QMainWindow):                           # <===
         self.label6 = QLabel("(~~~ x ~~~)", self)
         self.label6.move(150, 150)
     
-        self.label = QLabel("^Up on Desktop^", self)
-        self.pushButton = QPushButton("<", self)
-        self.pushButton.resize(200,50)
-        self.pushButton.clicked.connect(self.left_up)
+        #initialize, resize, move, and connect buttones
+        self.leftpush = QPushButton("< monitor left <", self)
+        self.rightpush = QPushButton("> monitor right >", self)
+        self.uppush = QPushButton("^ monitor up ^", self)
+        self.downpush = QPushButton("V monitor\ndown V", self)
+        
+        self.leftpush.resize(100,100)
+        self.downpush.resize(100,100)
+        self.uppush.resize(100,100)
+        self.rightpush.resize(100,100) 
 
-        self.pushButton.move(0, 0)
-        self.pushButton = QPushButton(">", self)
-        self.pushButton.clicked.connect(self.right_up)
+        self.leftpush.move(75, 150)
+        self.rightpush.move(325, 150)
+        self.uppush.move(200, 50)
+        self.downpush.move(200, 250)
 
-        self.pushButton.resize(200,50)
-        self.pushButton.move(0, 50)
-        self.pushButton = QPushButton("^", self)
-        self.pushButton.clicked.connect(self.up_up)
+        self.BIGBUTTON = QPushButton("PRESS FOR COORDINATES", self)
+        self.BIGBUTTON.resize(500,500)
+        self.BIGBUTTON.move(250,500)
+        self.BIGBUTTON.clicked.connect(lambda: self.printCoordinates())
 
-        self.pushButton.resize(0,100)
-        self.pushButton = QPushButton("V", self)
-        self.pushButton.resize(0,150)
-        self.pushButton.clicked.connect(self.down_up)
+        self.leftpush.clicked.connect(self.left_up)
+        self.rightpush.clicked.connect(self.right_up)
+        self.uppush.clicked.connect(self.up_up)
+        self.downpush.clicked.connect(self.down_up)
 
     def right_up(self):
         print("Desktop-Right is Projector-Space-Up")
-
     def left_up(self):
         print("Desktop-Left is Projector-Space-Up")
-
     def up_up(self):
         print("Desktop-Up is Projector-Space-Up")
-
     def down_up(self):
         print("Desktop-Down is Projector-Space-Up")
+
+
+    def printCoordinates(self):
+        width = self.frameGeometry().width()
+        height = self.frameGeometry().height()
+        p = self.mapToGlobal(QtCore.QPoint(0, 0))
+        q = self.mapToGlobal(QtCore.QPoint(width, height))
+
+        print("Top-Left Corner:" + str(p)[19:])
+        print("Bottom-Right Corner:" + str(q)[19:])
+        print("Resolution:" + str(width) + " x " + str(height))
 
     def eventFilter(self, obj, event):
         if event.type() in {QtCore.QEvent.Resize, QtCore.QEvent.Move}:
@@ -80,13 +95,8 @@ class Window(QMainWindow):
     def initUI(self):
         #self.setWindowTitle("Resize This Window")
 
-        c = csv.writer(output)
-        c.writerow(['Monitor', 'Projector', 'Orientation', 'Resolution'
-            'Top Left Coordinate', 'Bottom Right Coordinate'])
-        monitors = ['1A', '1B', '1C', '2A', '2B', '2C']
-        for monitor in monitors:
-            c.writerow([monitor])
-
+        self.numClicks = 0
+        self.monitors = ['1A', '1B', '1C', '2A', '2B', '2C']
 
         self.title = "First Window"
         self.top = 100
@@ -136,25 +146,28 @@ class Window(QMainWindow):
         self.w.show()
         #self.hide()
 
-    #def print_LineEdit(self, text):
-        #line = lineEntry1.text()
-        #print(text)
-
     def button_clicked(self):
         projector = self.lineEntry1.text()
         orientation = self.lineEntry2.text()
-        print(projector + ", " + orientation)
+        print(self.monitors[self.numClicks] + ': ' + 
+            projector + ", " + orientation)
+        self.numClicks = self.numClicks+1
 
-        #monitors = ['1A', '1B', '1C', '2A', '2B', '2C']
-
-        #output = open('output.csv', 'w')
-        #c = csv.writer(output)
-        #c.writerow(monitors[currentRow], projector, orientation, 0, 0, 0)
-        #currentRow = currentRow + 1
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    output = open('output.csv', 'w')
+    print('Monitor Number: Projector Number, Orientation, Resolution, Top Left Coordinate, Bottom Right Coordinate')
     window = Window()
     sys.exit(app.exec())
+
+
+
+
+
+
+
+
+
+
+
